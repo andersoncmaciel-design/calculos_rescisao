@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Rescisão Trabalhista</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background-color:#f4f4f4;
+    padding:20px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+}
+
+label{
+    display:block;
+    margin-top:12px;
+    font-weight:bold;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#0077cc;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#005fa3;
+}
+
+.resultado{
+    margin-top:20px;
+    background:#eef7ee;
+    padding:15px;
+    border-radius:5px;
+}
+
+.valor{
+    font-weight:bold;
+    color:green;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Calculadora de Rescisão</h1>
+
+<label>Salário Mensal (R$)</label>
+<input type="number" id="salario" step="0.01">
+
+<label>Dia do Desligamento</label>
+<input type="number" id="dia" min="1" max="31">
+
+<label>Mês do Desligamento</label>
+<input type="number" id="mes" min="1" max="12">
+
+<label>Saldo de FGTS Acumulado (R$)</label>
+<input type="number" id="fgts" step="0.01">
+
+<label>Tipo de Rescisão</label>
+<select id="tipo">
+    <option value="semJustaCausa">
+        Sem Justa Causa
+    </option>
+
+    <option value="pedidoDemissao">
+        Pedido de Demissão
+    </option>
+</select>
+
+<button onclick="calcularRescisao()">
+Calcular Rescisão
+</button>
+
+<div id="resultado" class="resultado"></div>
+
+</div>
+
+<script>
+
+function calcularRescisao(){
+
+    let salario =
+        parseFloat(document.getElementById("salario").value);
+
+    let dia =
+        parseInt(document.getElementById("dia").value);
+
+    let mes =
+        parseInt(document.getElementById("mes").value);
+
+    let fgts =
+        parseFloat(document.getElementById("fgts").value);
+
+    let tipo =
+        document.getElementById("tipo").value;
+
+    if(
+        isNaN(salario) ||
+        isNaN(dia) ||
+        isNaN(mes) ||
+        isNaN(fgts)
+    ){
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    // Saldo de salário
+    let saldoSalario =
+        (salario / 30) * dia;
+
+    // 13º proporcional
+    let decimoTerceiro =
+        (salario / 12) * mes;
+
+    // Férias proporcionais
+    let feriasProporcionais =
+        (salario / 12) * mes;
+
+    // 1/3 constitucional
+    let umTerco =
+        feriasProporcionais / 3;
+
+    // Multa FGTS
+    let multaFGTS = 0;
+
+    if(tipo === "semJustaCausa"){
+        multaFGTS = fgts * 0.40;
+    }
+
+    let total =
+        saldoSalario +
+        decimoTerceiro +
+        feriasProporcionais +
+        umTerco +
+        multaFGTS;
+
+    document.getElementById("resultado").innerHTML =
+
+    "<h2>Resultado</h2>" +
+
+    "<p>Saldo de Salário: <span class='valor'>R$ "
+    + saldoSalario.toFixed(2) +
+    "</span></p>" +
+
+    "<p>13º Proporcional: <span class='valor'>R$ "
+    + decimoTerceiro.toFixed(2) +
+    "</span></p>" +
+
+    "<p>Férias Proporcionais: <span class='valor'>R$ "
+    + feriasProporcionais.toFixed(2) +
+    "</span></p>" +
+
+    "<p>1/3 Constitucional: <span class='valor'>R$ "
+    + umTerco.toFixed(2) +
+    "</span></p>" +
+
+    "<p>Multa de 40% FGTS: <span class='valor'>R$ "
+    + multaFGTS.toFixed(2) +
+    "</span></p>" +
+
+    "<hr>" +
+
+    "<h2>Total Estimado: <span class='valor'>R$ "
+    + total.toFixed(2) +
+    "</span></h2>";
+}
+
+</script>
+
+</body>
+</html>
